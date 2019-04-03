@@ -1,0 +1,82 @@
+---
+title: "Hello, `dygraphs`"
+author: "Jeff Newmiller"
+date: "April 2, 2019"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE,warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.height = 3)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages( library(xts) )
+library(dygraphs)
+```
+
+## `dygraphs` Package
+
+- Generates interactive time-series plots for embedding in HTML
+- Works in "static" html (self-contained file) as well as "dynamic" html (Shiny)
+- Uses the [dygraphs](https://rstudio.github.io/dygraphs/) JavaScript library, embeds data into the html
+- MIT licensed
+
+## Basic Plot
+
+```{r}
+dygraph(nhtemp, main = "New Haven Temperatures")
+```
+
+## How does it work?
+
+The `dygraph` function returns a "dygraphs" object, which is a kind of "htmlwidget".
+
+When you print a `dygraph` object at the RStudio console it recognizes that it is an "htmlwidget" and displays it in the Viewer pane. (Convenient!)
+
+When you print it from within a `knitr` code chunk, `knitr` recognizes that it is an "htmlwidget" and renders the JavaScript and data into the output file. Note that this use case does not **require** RStudio, which can be convenient if you want to generate graphs on a headless server.
+
+When a web browser runs the script (later), it becomes interactive.
+
+## Grouped Graphs
+
+```{r,echo=TRUE,fig.height=1}
+dygraph(ldeaths, main = "All", group = "lung-deaths")
+dygraph(mdeaths, main = "Male", group = "lung-deaths")
+dygraph(fdeaths, main = "Female", group = "lung-deaths")
+```
+
+## Alternate Zoom
+
+```{r}
+dygraph(nhtemp, main = "New Haven Temperatures") %>% 
+  dyRangeSelector()
+```
+
+
+## Candlestick Display
+
+```{r}
+library(xts)
+data(sample_matrix)
+m <- tail(sample_matrix, n = 32)
+dygraph(m) %>%
+  dyCandlestick()
+```
+
+## Inputs
+
+The `dygraph` function expects an `xts` object or a data frame with time in the first column.
+
+```{r}
+Sys.setenv( TZ="GMT" )
+dta <- read.csv( "../data/MAC000002clean.csv"
+               , as.is = TRUE
+               , colClasses = c( NA, "POSIXct", "numeric" )
+               )
+Sys.setenv( TZ="Europe/London" )
+# as.matrix keeps column label from data frame
+dtaxts <- xts( as.matrix( dta[ , "KWH", drop=FALSE ] )
+             , order.by = dta$DateTime
+             )
+dygraph(dtaxts, main = "Sample Home Electricity Consumption (kWh)") %>% 
+  dyRangeSelector()
+```
+
