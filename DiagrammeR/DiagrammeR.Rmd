@@ -24,6 +24,7 @@ library(dplyr)
 ## grViz 1
 
 ```{r,echo=TRUE}
+library(DiagrammeR)
 grViz(
 'digraph sample1 {
 A -> B
@@ -180,3 +181,6 @@ sequenceDiagram;
 
 - Particularly useful when you _don't_ know what the graph will look like once it is drawn, or the information in the graph may change frequently 
 - Avoid spending too much time trying to force **grViz** to create your "vision" of a graph... learn from what it has to show you and move on to a different tool if you feel you really must tweak the layout
+- Lots of examples
+    + http://rich-iannone.github.io/DiagrammeR/
+- `install.packages("DiagrammeR")`

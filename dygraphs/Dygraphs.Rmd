@@ -19,7 +19,16 @@ library(dygraphs)
 - Uses the [dygraphs](https://rstudio.github.io/dygraphs/) JavaScript library, embeds data into the html
 - MIT licensed
 
+```{r,eval=FALSE}
+install.packages("dygraphs",dependencies = TRUE)
+library(xts)
+library(dygraphs)
+```
+
+
 ## Basic Plot
+
+`nhtemp` is a data set in the `datasets` package that comes with R.
 
 ```{r}
 dygraph(nhtemp, main = "New Haven Temperatures")
@@ -63,7 +72,7 @@ dygraph(m) %>%
 
 ## Inputs
 
-The `dygraph` function expects an `xts` object or a data frame with time in the first column.
+The `dygraph` function expects an `xts` object or a data frame with a `numeric` first column.
 
 ```{r}
 Sys.setenv( TZ="GMT" )
@@ -76,7 +85,15 @@ Sys.setenv( TZ="Europe/London" )
 dtaxts <- xts( as.matrix( dta[ , "KWH", drop=FALSE ] )
              , order.by = dta$DateTime
              )
-dygraph(dtaxts, main = "Sample Home Electricity Consumption (kWh)") %>% 
+dygraph( dtaxts
+       , main = "Sample Home Electricity Consumption"
+       , ylab = "Power (kWh)"
+       ) %>% 
   dyRangeSelector()
 ```
 
+## Conclusion
+
+- Ideal for timeseries, not a general purpose solution
+- https://rstudio.github.io/dygraphs/
+- `install.packages("dygraphs")`
