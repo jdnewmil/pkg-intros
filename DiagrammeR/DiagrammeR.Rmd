@@ -1,0 +1,182 @@
+---
+title: "Hello, DiagrammeR"
+author: "Jeff Newmiller"
+date: "April 2, 2019"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(fig.height = 3)
+library(DiagrammeR)
+library(dplyr)
+```
+
+## Concept
+
+- _DiagrammeR_ allows algorithmically-generated diagrams to be created from simplified text descriptions of relationships. Even though a GUI diagram editor can be a powerful tool for expressing relationships that are already in your head, sometimes you want the computer to show you relationships between various things that you are unfamiliar with.
+- _DiagrammeR_ supports two different syntaxes:
+    + **grViz** for node/edge diagrams
+        - Can be laid out directionally (e.g. left to right), or radially (like a bicycle wheel), or in clusters with many interconnections (clumps)
+    + **mermaid** for flowcharts/sequence diagrams
+- Not as comprehensive as `igraph`, but IMO simpler
+
+## grViz 1
+
+```{r,echo=TRUE}
+grViz(
+'digraph sample1 {
+A -> B
+}')
+```
+
+## grViz 2
+
+```{r,echo=TRUE}
+grViz(
+'digraph sample2 {
+Boss -> Me
+Boss -> "Co-worker"
+}')
+```
+
+## grViz features
+
+```{r,echo=TRUE}
+grViz(
+'digraph sample1 {
+rankdir="LR"
+A [ shape = diamond ]
+// Transparency (alpha) using #rrggbbaa last byte
+E [ fillcolor = "#0000FF80"; style=filled ]
+A -> B [ label = "start" ]
+B -> { C D }
+{ C D } -> E
+}')
+```
+
+## grViz "dot"
+
+Default linear layout:
+
+```{r,echo=FALSE}
+grViz("
+digraph dot {
+
+graph [layout = dot]
+
+node [shape = circle,
+      style = filled,
+      color = grey,
+      label = '']
+
+node [fillcolor = red]
+a
+
+node [fillcolor = green]
+b c d
+
+node [fillcolor = orange]
+
+edge [color = grey]
+a -> {b c d}
+b -> {e f g h i j}
+c -> {k l m n o p}
+d -> {q r s t u v}
+}")
+```
+
+## grViz "neato"
+
+"Repelling" spacing between nodes: `graph [layout = neato]`
+
+```{r, echo=FALSE}
+grViz("
+digraph neato {
+
+graph [layout = neato]
+
+node [shape = circle,
+      style = filled,
+      color = grey,
+      label = '']
+
+node [fillcolor = red]
+a
+
+node [fillcolor = green]
+b c d
+
+node [fillcolor = orange]
+
+edge [color = grey]
+a -> {b c d}
+b -> {e f g h i j}
+c -> {k l m n o p}
+d -> {q r s t u v}
+}")
+```
+
+## grViz "twopi"
+
+Circular "ranks": `graph [layout = twopi]`
+
+```{r, echo=FALSE}
+grViz("
+digraph twopi {
+
+graph [layout = twopi]
+
+node [shape = circle,
+      style = filled,
+      color = grey,
+      label = '']
+
+node [fillcolor = red]
+a
+
+node [fillcolor = green]
+b c d
+
+node [fillcolor = orange]
+
+edge [color = grey]
+a -> {b c d}
+b -> {e f g h i j}
+c -> {k l m n o p}
+d -> {q r s t u v}
+}")
+```
+
+## Tabular Diagram Construction
+
+- _DiagrammeR_ has functions that can let you build graphs from tabular data with tidyverse pipes, and sanity check the graph (e.g. verify only one boss per employee), and do computations on "connected" node data (e.g. count nodes "dependent" on a specified node)
+
+## mermaid Sequence diagrams
+
+Useful for showing interactions between things/people (from documentation).
+
+```{r}
+DiagrammeR("
+sequenceDiagram;
+   customer->>ticket seller: ask for ticket;
+   ticket seller->>database: seats;
+   alt tickets available
+     database->>ticket seller: ok;
+     ticket seller->>customer: confirm;
+     customer->>ticket seller: ok;
+     ticket seller->>database: book a seat;
+     ticket seller->>printer: print ticket;
+   else sold out
+     database->>ticket seller: none left;
+     ticket seller->>customer:  sorry;
+   end
+")
+
+```
+
+
+## DiagrammeR Tips
+
+- Particularly useful when you _don't_ know what the graph will look like once it is drawn, or the information in the graph may change frequently 
+- Avoid spending too much time trying to force **grViz** to create your "vision" of a graph... learn from what it has to show you and move on to a different tool if you feel you really must tweak the layout
