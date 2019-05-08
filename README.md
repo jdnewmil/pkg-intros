@@ -8,8 +8,10 @@ These materials were prepared for a meeting of the East Bay R Beginners Meetup G
 
 The _DiagrammeR_ package allows incremental or programmatically-generated node/edge graphs to be drawn. It also supports interaction diagrams that are useful for conveying sequential interactions between people and software, or between different software components.
 
+Presentation at https://jdnewmil.github.io/pkg-intros/DiagrammeR.html
 
 ## dygraph
 
 The _dygraph_ package allows you to embed interactive time series plots into an otherwise static web page, or in a dynamic (Shiny) web page.
 
+Presentation at https://jdnewmil.github.io/pkg-intros/Dygraphs.html
